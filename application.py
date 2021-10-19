@@ -90,7 +90,9 @@ if password == st.secrets["password"]:
     description = m_column.text_area(label="Description")
 
     player_id = str(
-        player_options[player_options["Player"] == players].loc[0, "Player ID"]
+        player_options[player_options["Player"] == players]
+        .reset_index()
+        .loc[0, "Player ID"]
     )
 
     if st.button(label="Add Row"):
@@ -111,9 +113,6 @@ if password == st.secrets["password"]:
                 "Description": description,
             }
         )
-        # st.write(pd.DataFrame(get_data()))
-        # pd.DataFrame(get_data()).to_clipboard(index=False) # Removed this for now, doesn't work on Streamlit Sharing
-    # if st.button(label="Download CSV"):
 
     if st.button(label="Clear Table"):
         get_data().clear()
@@ -122,12 +121,23 @@ if password == st.secrets["password"]:
         get_data().pop()
 
     if st.button(label="Append to Google Doc"):
-        last_row = len(da.injury_tracker()["Player Name"]) + 1
+        last_row = len(da.injury_tracker()["Player Name"]) + 2
         number_rows_to_add = len(pd.DataFrame(get_data())) + last_row
-        temp_dataframe = pd.DataFrame(get_data()).astype(
-            list(pd.DataFrame(get_data()).columns)
+        temp_dataframe = pd.DataFrame(get_data())
+        temp_dataframe["Date of Injury"] = pd.to_datetime(
+            temp_dataframe["Date of Injury"]
         )
-        values_to_append = pd.DataFrame(get_data()).values.tolist()
+        temp_dataframe["Date of Injury Resolved"] = pd.to_datetime(
+            temp_dataframe["Date of Injury Resolved"]
+        )
+        temp_dataframe["Date of Injury"] = temp_dataframe["Date of Injury"].dt.strftime(
+            "%d-%m-%Y"
+        )
+        temp_dataframe["Date of Injury Resolved"] = temp_dataframe[
+            "Date of Injury Resolved"
+        ].dt.strftime("%d-%m-%Y")
+        temp_dataframe = temp_dataframe.astype(str)
+        values_to_append = temp_dataframe.values.tolist()
         gc = gspread.service_account_from_dict(da.sa_creds)
 
         sh = gc.open_by_key(
@@ -138,7 +148,18 @@ if password == st.secrets["password"]:
             f"A{last_row}:M{number_rows_to_add}", values_to_append
         )
 
-    st.write(pd.DataFrame(get_data()))
+    show_dataframe = pd.DataFrame(get_data())
+    show_dataframe["Date of Injury"] = pd.to_datetime(show_dataframe["Date of Injury"])
+    show_dataframe["Date of Injury Resolved"] = pd.to_datetime(
+        show_dataframe["Date of Injury Resolved"]
+    )
+    show_dataframe["Date of Injury"] = show_dataframe["Date of Injury"].dt.strftime(
+        "%d-%m-%Y"
+    )
+    show_dataframe["Date of Injury Resolved"] = show_dataframe[
+        "Date of Injury Resolved"
+    ].dt.strftime("%d-%m-%Y")
+    st.write(show_dataframe)
 
     csv = pd.DataFrame(get_data()).to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # some strings
