@@ -84,8 +84,8 @@ if password == st.secrets["password"]:
         index=0,
     )
     # print(exercise_groups)
-    days_missed = r_column.number_input(label="Days Missed")
-    games_missed = l_column.number_input(label="Games Missed")
+    days_missed = r_column.number_input(label="Days Missed", step=1)
+    games_missed = l_column.number_input(label="Games Missed", step=1)
 
     description = m_column.text_area(label="Description")
 
