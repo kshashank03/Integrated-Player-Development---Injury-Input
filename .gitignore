@@ -1,0 +1,6 @@
+/.DS_Store
+/.streamlit
+/__pycache__
+/assets
+/credentials.json
+/test.ipynb
