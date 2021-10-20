@@ -43,11 +43,6 @@ if password == st.secrets["password"]:
         label="Players", options=player_options["Player"].dropna(), index=0
     )
 
-    # player_id = m_column.subheader(
-    #     "Player ID: "
-    #     + str(player_options[player_options["Player"] == players].loc[0, "Player ID"])
-    # )
-
     season = m_column.selectbox(
         label="Season", options=injury_options["Season"].dropna(), index=2
     )
@@ -121,7 +116,7 @@ if password == st.secrets["password"]:
         get_data().pop()
 
     if st.button(label="Append to Google Doc"):
-        last_row = len(da.injury_tracker()["Player Name"]) + 2
+        last_row = len(da.injury_tracker().iloc[:, 0]) + 2
         number_rows_to_add = len(pd.DataFrame(get_data())) + last_row
         temp_dataframe = pd.DataFrame(get_data())
         temp_dataframe["Date of Injury"] = pd.to_datetime(
