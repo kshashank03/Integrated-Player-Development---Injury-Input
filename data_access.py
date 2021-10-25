@@ -50,6 +50,13 @@ def injury_tracker():
 
     return dataframe
 
+def injury_tracker_worksheet_object():
+    gc = gspread.service_account_from_dict(sa_creds)
+
+    sh = gc.open_by_key("1KIVZXn4xPl-ewEThJVAPlX2mexZCucVOydULgqhhEJ8").worksheet("InjuryTrackingLive")  # Injury Data
+
+    return sh
+
 
 def calendar_schedule():
     # gc = gspread.service_account(filename="credentials.json")

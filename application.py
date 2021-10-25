@@ -1,23 +1,10 @@
 import streamlit as st
 import pandas as pd
 import data_access as da
-import base64
-import io
+# import base64
+# import io
 import gspread
-
-# Player Name
-# Player ID
-# Season
-# Date of Injury
-# Date of Injury Resolved
-# Season Window
-# Type Of Injury
-# Area of Injury
-# Side of Injury
-# Contact Injury
-# Days Missed
-# Games Missed
-# Description
+from datetime import datetime
 
 st.set_page_config(layout="wide")
 
@@ -29,6 +16,7 @@ def get_data():
 
 player_options = da.player_data()
 injury_options = da.injury_options_data()
+injury_data = da.injury_tracker()
 
 title = st.header("Player Injury Input Tool")
 
@@ -49,7 +37,7 @@ if password == st.secrets["password"]:
 
     date_of_injury = r_column.date_input(label="Date of Injury")
 
-    date_of_recovery = l_column.date_input(label="Date of Recovery")
+    date_of_recovery = l_column.date_input(label="Date of Recovery", value=None) # This isn't working
 
     season_window = m_column.selectbox(
         label="Season Window", options=injury_options["Season Window"].dropna(), index=0
@@ -116,7 +104,7 @@ if password == st.secrets["password"]:
         get_data().pop()
 
     if st.button(label="Append to Google Doc"):
-        last_row = len(da.injury_tracker().iloc[:, 0]) + 2
+        last_row = len(injury_data.iloc[:, 0]) + 2
         number_rows_to_add = len(pd.DataFrame(get_data())) + last_row
         temp_dataframe = pd.DataFrame(get_data())
         temp_dataframe["Date of Injury"] = pd.to_datetime(
@@ -144,19 +132,107 @@ if password == st.secrets["password"]:
         )
 
     show_dataframe = pd.DataFrame(get_data())
-    show_dataframe["Date of Injury"] = pd.to_datetime(show_dataframe["Date of Injury"])
-    show_dataframe["Date of Injury Resolved"] = pd.to_datetime(
-        show_dataframe["Date of Injury Resolved"]
-    )
-    show_dataframe["Date of Injury"] = show_dataframe["Date of Injury"].dt.strftime(
-        "%d-%m-%Y"
-    )
-    show_dataframe["Date of Injury Resolved"] = show_dataframe[
-        "Date of Injury Resolved"
-    ].dt.strftime("%d-%m-%Y")
-    st.write(show_dataframe)
+    if len(show_dataframe) < 1:
+        pass 
+    else:
+        show_dataframe["Date of Injury"] = pd.to_datetime(show_dataframe["Date of Injury"])
+        show_dataframe["Date of Injury Resolved"] = pd.to_datetime(
+            show_dataframe["Date of Injury Resolved"]
+        )
+        show_dataframe["Date of Injury"] = show_dataframe["Date of Injury"].dt.strftime(
+            "%d-%m-%Y"
+        )
+        show_dataframe["Date of Injury Resolved"] = show_dataframe[
+            "Date of Injury Resolved"
+        ].dt.strftime("%d-%m-%Y")
+    
+    
 
-    csv = pd.DataFrame(get_data()).to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # some strings
-    linko = f'<a href="data:file/csv;base64,{b64}" download="exercises.csv">Download csv file</a>'
-    st.markdown(linko, unsafe_allow_html=True)
+    st.header("Data to Append")
+    st.caption("This is the data you'll be appending to the Google Sheet")
+    st.write(show_dataframe)
+    st.header("Current Player Data")
+    st.caption("Displays records on the Google Sheet for the player you selected in the dropdown at the top of the screen")
+    current_player_data = injury_data[injury_data["Player Name"] == players]
+    if len(current_player_data.index) == 0:
+        pass
+    else:
+        update_radio_options = [option for option in current_player_data.index]
+        update_radio = st.radio("Which row to update", update_radio_options)
+    current_player_dataframe = st.write(current_player_data)
+
+    # l_column, m_column, r_column = st.columns((1, 1, 1))
+
+    if len(current_player_data.index) == 0:
+        pass
+    else:
+        # update_players = l_column.selectbox(
+        #     label="Players", options=player_options["Player"].dropna(), index=0
+        # )
+
+        # update_season = m_column.selectbox(
+        #     label="Season", options=injury_options["Season"].dropna(), index=2
+        # )
+
+        # update_date_of_injury = r_column.date_input(label="Date of Injury")
+
+        values_to_update = injury_data.iloc[update_radio, :]
+
+        update_date_of_recovery = st.date_input(label="Date of Recovery", value=pd.to_datetime(values_to_update["Date of Injury Resolved"]), key="update_date_of_recovery") # This isn't working
+
+
+        update_season_window_options = injury_options["Season Window"].dropna()
+        update_season_window_options_index = update_season_window_options[update_season_window_options==values_to_update["Season Window"]].index[0]
+
+        update_season_window = st.selectbox(
+            label="Season Window", options=update_season_window_options, index=int(update_season_window_options_index)
+        , key="update_season_window")
+
+
+        update_type_of_injury_options = injury_options["Type Of Injury"].dropna()
+        update_type_of_injury_options_index = update_type_of_injury_options[update_type_of_injury_options==values_to_update["Type Of Injury"]].index[0]
+        update_type_of_injury = st.selectbox(
+            label="Type of Injury",
+            options=update_type_of_injury_options,
+            index=int(update_type_of_injury_options_index), key="update_type_of_injury"
+        )
+
+
+        update_area_of_injury_options = injury_options["Area of Injury"].dropna()
+        update_area_of_injury_options_index = update_area_of_injury_options[update_area_of_injury_options==values_to_update["Area of Injury"]].index[0]
+        update_area_of_injury = st.selectbox(
+            label="Area of Injury",
+            options=update_area_of_injury_options,
+            index=int(update_area_of_injury_options_index), key="update_area_of_injury"
+        )
+
+
+        update_side_of_injury_options = injury_options["Side of Injury"].dropna()
+        update_side_of_injury_options_index = update_side_of_injury_options[update_side_of_injury_options==values_to_update["Side of Injury"]].index[0]
+        update_side_of_injury = st.selectbox(
+            label="Side of Injury",
+            options=update_side_of_injury_options,
+            index=int(update_side_of_injury_options_index), key="update_side_of_injury"
+        )
+
+        # update_contact_injury = m_column.selectbox(
+        #     label="Contact Injury",
+        #     options=injury_options["Contact Injury"].dropna(),
+        #     value=values_to_update["Contact Injury"]
+        # )
+        update_days_missed = st.number_input(label="Days Missed", step=1, value=values_to_update["Days Missed"], key="update_days_missed")
+        update_games_missed = st.number_input(label="Games Missed", step=1, value=values_to_update["Games Missed"], key="update_games_missed")
+
+        update_description = st.text_area(label="Description", value=values_to_update["Description"], key="update_description")
+
+        if st.button(label="Update This Row of Data"):
+            index_value = str(update_radio + 2)
+            worksheet = da.injury_tracker_worksheet_object()
+            worksheet.update("E" + index_value, update_date_of_recovery.strftime("%d-%m-%Y"))
+            worksheet.update("F" + index_value, update_season_window)
+            worksheet.update("G" + index_value, update_type_of_injury)
+            worksheet.update("H" + index_value, update_area_of_injury)
+            worksheet.update("I" + index_value, update_side_of_injury)
+            worksheet.update("K" + index_value, update_days_missed)
+            worksheet.update("L" + index_value, update_games_missed)
+            worksheet.update("M" + index_value, update_description)
