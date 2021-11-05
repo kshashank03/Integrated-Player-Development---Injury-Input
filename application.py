@@ -188,6 +188,7 @@ if password == st.secrets["password"]:
         pass
     else:
         values_to_update = injury_data.iloc[update_radio, :]
+        values_to_update = values_to_update.fillna('')
 
         if pd.isnull(pd.to_datetime(values_to_update["Date of Injury Resolved"])):
             update_recovered = st.radio(
@@ -267,6 +268,8 @@ if password == st.secrets["password"]:
         #     options=injury_options["Contact Injury"].dropna(),
         #     value=values_to_update["Contact Injury"]
         # )
+        if values_to_update["Days Missed"] == '' or values_to_update["Days Missed"] == None:
+            values_to_update["Days Missed"] = 0
         update_days_missed = st.number_input(
             label="Days Missed",
             step=1,
