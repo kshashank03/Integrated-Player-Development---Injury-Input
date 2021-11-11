@@ -286,7 +286,7 @@ if password == st.secrets["password"]:
 
         if update_date_of_recovery != "":
             update_days_missed_value = (
-                update_date_of_recovery - values_to_update["Date of Injury"]
+                update_date_of_recovery - datetime.strptime(values_to_update["Date of Injury"])
             ).days
             update_days_missed = st.number_input(
                 label="Days Missed",
