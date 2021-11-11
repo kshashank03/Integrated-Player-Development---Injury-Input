@@ -77,11 +77,15 @@ if password == st.secrets["password"]:
 
     if date_of_recovery != "":
         days_missed_value = (date_of_recovery - date_of_injury).days
-        days_missed = r_column.number_input(label="Days Missed", step=1, value=days_missed_value)
+        days_missed = r_column.number_input(
+            label="Days Missed", step=1, value=days_missed_value
+        )
     else:
-        days_missed = r_column.number_input(label="Days Missed", step=1,)
+        days_missed = r_column.number_input(
+            label="Days Missed",
+            step=1,
+        )
 
-    
     games_missed = l_column.number_input(label="Games Missed", step=1)
 
     surgery = r_column.selectbox(
@@ -194,7 +198,7 @@ if password == st.secrets["password"]:
         pass
     else:
         values_to_update = injury_data.iloc[update_radio, :]
-        values_to_update = values_to_update.fillna('')
+        values_to_update = values_to_update.fillna("")
 
         if pd.isnull(pd.to_datetime(values_to_update["Date of Injury Resolved"])):
             update_recovered = st.radio(
@@ -274,16 +278,34 @@ if password == st.secrets["password"]:
         #     options=injury_options["Contact Injury"].dropna(),
         #     value=values_to_update["Contact Injury"]
         # )
-        if values_to_update["Days Missed"] == '' or values_to_update["Days Missed"] == None:
+        if (
+            values_to_update["Days Missed"] == ""
+            or values_to_update["Days Missed"] == None
+        ):
             values_to_update["Days Missed"] = 0
-        update_days_missed = st.number_input(
-            label="Days Missed",
-            step=1,
-            min_value=0,
-            max_value= 1000,
-            value=int(values_to_update["Days Missed"]),
-            key="update_days_missed",
-        )
+
+        if update_date_of_recovery != "":
+            update_days_missed_value = (
+                update_date_of_recovery - values_to_update["Date of Injury"]
+            ).days
+            update_days_missed = st.number_input(
+                label="Days Missed",
+                step=1,
+                min_value=0,
+                max_value=1000,
+                value=int(update_days_missed_value),
+                key="update_days_missed",
+            )
+        else:
+            update_days_missed = st.number_input(
+                label="Days Missed",
+                step=1,
+                min_value=0,
+                max_value=1000,
+                value=int(values_to_update["Days Missed"]),
+                key="update_days_missed",
+            )
+
         update_games_missed = st.number_input(
             label="Games Missed",
             step=1,
