@@ -75,7 +75,12 @@ if password == st.secrets["password"]:
         index=0,
     )
 
-    days_missed = r_column.number_input(label="Days Missed", step=1)
+    if date_of_recovery != None:
+        days_missed_value = (date_of_recovery - date_of_injury).days
+    else:
+        days_missed_value = None
+
+    days_missed = r_column.number_input(label="Days Missed", step=1, value=days_missed_value)
     games_missed = l_column.number_input(label="Games Missed", step=1)
 
     surgery = r_column.selectbox(
