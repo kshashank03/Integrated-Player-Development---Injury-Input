@@ -149,7 +149,7 @@ if password == st.secrets["password"]:
         )  # Injury Data
 
         sh.worksheet("InjuryTrackingLive").update(
-            f"A{last_row}:M{number_rows_to_add}", values_to_append
+            f"A{last_row}:P{number_rows_to_add}", values_to_append
         )
 
     show_dataframe = pd.DataFrame(get_data())
