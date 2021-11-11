@@ -75,7 +75,7 @@ if password == st.secrets["password"]:
         index=0,
     )
 
-    if date_of_recovery != None:
+    if date_of_recovery != "":
         days_missed_value = (date_of_recovery - date_of_injury).days
     else:
         days_missed_value = None
