@@ -281,7 +281,7 @@ if password == st.secrets["password"]:
             step=1,
             min_value=0,
             max_value= 1000,
-            value=values_to_update["Days Missed"],
+            value=int(values_to_update["Days Missed"]),
             key="update_days_missed",
         )
         update_games_missed = st.number_input(
