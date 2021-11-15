@@ -221,10 +221,10 @@ if password == st.secrets["password"]:
                 key="update_date_of_recovery",
             )
 
-        # if update_recovered == "Yes":
-        #     update_date_of_recovery = st.date_input(
-        #         label="Date of Recovery", key="update_date_of_recovery"
-        #     )
+        if update_recovered == "Yes":
+            update_date_of_recovery = st.date_input(
+                label="Date of Recovery", key="update_date_of_recovery"
+            )
         # else:
         #     update_date_of_recovery = ""
 
