@@ -159,7 +159,7 @@ if password == st.secrets["password"]:
         )  # Injury Data
 
         sh.worksheet("InjuryTrackingLive").update(
-            f"A{last_row}:P{number_rows_to_add}", values_to_append, 'USER_ENTERED'
+            f"A{last_row}:P{number_rows_to_add}", values_to_append, params={ 'valueInputOption': 'USER_ENTERED'}
         )
 
     show_dataframe = pd.DataFrame(get_data())
@@ -368,14 +368,14 @@ if password == st.secrets["password"]:
         if st.button(label="Update This Row of Data"):
             index_value = str(update_radio + 2)
             worksheet = da.injury_tracker_worksheet_object()
-            worksheet.update("E" + index_value, update_date_of_recovery_valuetopass, 'USER_ENTERED')
-            worksheet.update("F" + index_value, update_season_window, 'USER_ENTERED')
-            worksheet.update("G" + index_value, update_type_of_injury, 'USER_ENTERED')
-            worksheet.update("H" + index_value, update_area_of_injury, 'USER_ENTERED')
-            worksheet.update("I" + index_value, update_side_of_injury, 'USER_ENTERED')
-            worksheet.update("K" + index_value, update_days_missed, 'USER_ENTERED')
-            worksheet.update("L" + index_value, update_games_missed, 'USER_ENTERED')
-            worksheet.update("M" + index_value, update_surgery, 'USER_ENTERED')
-            worksheet.update("N" + index_value, update_surgery_date_valuetopass, 'USER_ENTERED')
-            worksheet.update("O" + index_value, update_video_link, 'USER_ENTERED')
-            worksheet.update("P" + index_value, update_description, 'USER_ENTERED')
+            worksheet.update("E" + index_value, update_date_of_recovery_valuetopass, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("F" + index_value, update_season_window, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("G" + index_value, update_type_of_injury, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("H" + index_value, update_area_of_injury, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("I" + index_value, update_side_of_injury, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("K" + index_value, update_days_missed, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("L" + index_value, update_games_missed, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("M" + index_value, update_surgery, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("N" + index_value, update_surgery_date_valuetopass, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("O" + index_value, update_video_link, params={ 'valueInputOption': 'USER_ENTERED'})
+            worksheet.update("P" + index_value, update_description, params={ 'valueInputOption': 'USER_ENTERED'})
