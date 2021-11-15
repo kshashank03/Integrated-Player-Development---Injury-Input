@@ -283,28 +283,30 @@ if password == st.secrets["password"]:
             or values_to_update["Days Missed"] == None
         ):
             values_to_update["Days Missed"] = 0
+        
 
-        if update_date_of_recovery != "" or update_date_of_recovery == None or update_date_of_recovery == 'nan':
-            update_days_missed_value = (
-                update_date_of_recovery - datetime.strptime(values_to_update["Date of Injury"], "%d-%m-%Y").date()
-            ).days 
-            update_days_missed = st.number_input(
-                label="Days Missed",
-                step=1,
-                min_value=0,
-                max_value=1000,
-                value=int(update_days_missed_value),
-                key="update_days_missed",
-            )
-        else:
-            update_days_missed = st.number_input(
-                label="Days Missed",
-                step=1,
-                min_value=0,
-                max_value=1000,
-                value=int(values_to_update["Days Missed"]),
-                key="update_days_missed",
-            )
+        if update_recovered == 'Yes':
+            if update_date_of_recovery != "" or update_date_of_recovery == None or update_date_of_recovery == 'nan':
+                update_days_missed_value = (
+                    update_date_of_recovery - datetime.strptime(values_to_update["Date of Injury"], "%d-%m-%Y").date()
+                ).days 
+                update_days_missed = st.number_input(
+                    label="Days Missed",
+                    step=1,
+                    min_value=0,
+                    max_value=1000,
+                    value=int(update_days_missed_value),
+                    key="update_days_missed",
+                )
+            else:
+                update_days_missed = st.number_input(
+                    label="Days Missed",
+                    step=1,
+                    min_value=0,
+                    max_value=1000,
+                    value=int(values_to_update["Days Missed"]),
+                    key="update_days_missed",
+                )
 
         update_games_missed = st.number_input(
             label="Games Missed",
