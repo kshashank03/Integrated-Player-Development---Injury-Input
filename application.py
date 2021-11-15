@@ -355,12 +355,13 @@ if password == st.secrets["password"]:
             key="update_description",
         )
 
-        if update_date_of_recovery == "":
-            update_date_of_recovery_valuetopass = ""
-        else:
-            update_date_of_recovery_valuetopass = update_date_of_recovery.strftime(
-                "%d-%m-%Y"
-            )
+        if update_recovered == 'Yes':
+            if update_date_of_recovery == "":
+                update_date_of_recovery_valuetopass = ""
+            else:
+                update_date_of_recovery_valuetopass = update_date_of_recovery.strftime(
+                    "%d-%m-%Y"
+                )
 
         if update_surgery_date == "":
             update_surgery_date_valuetopass = ""
