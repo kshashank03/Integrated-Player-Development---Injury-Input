@@ -221,7 +221,7 @@ if password == st.secrets["password"]:
                 key="update_date_of_recovery",
             )
 
-        if update_recovered == "Yes":
+        if update_recovered == "Yes" and update_date_of_recovery == None:
             update_date_of_recovery = st.date_input(
                 label="Date of Recovery", key="update_date_of_recovery"
             )
