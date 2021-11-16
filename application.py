@@ -6,7 +6,7 @@ import data_access as da
 # import base64
 # import io
 import gspread
-from datetime import datetime
+from datetime import datetime, date
 
 st.set_page_config(layout="wide", page_title="IPD Injury Tracker")
 
@@ -159,7 +159,9 @@ if password == st.secrets["password"]:
         )  # Injury Data
 
         sh.worksheet("InjuryTrackingLive").update(
-            f"A{last_row}:P{number_rows_to_add}", values_to_append, value_input_option='USER_ENTERED'
+            f"A{last_row}:P{number_rows_to_add}",
+            values_to_append,
+            value_input_option="USER_ENTERED",
         )
 
     show_dataframe = pd.DataFrame(get_data())
@@ -200,6 +202,14 @@ if password == st.secrets["password"]:
         values_to_update = injury_data.iloc[update_radio, :]
         values_to_update = values_to_update.fillna("")
 
+        update_date_of_injury = r_column.date_input(
+            label="Date of Injury",
+            value=pd.to_datetime(values_to_update["Date of Injury"], format="%d-%m-%Y"),
+            key="update_date_of_injury",
+        )
+
+        update_date_of_injury_value_to_pass = update_date_of_injury.strftime(format="%d-%m-%Y")
+
         if pd.isnull(pd.to_datetime(values_to_update["Date of Injury Resolved"])):
             update_recovered = st.radio(
                 label="Recovered?",
@@ -217,7 +227,9 @@ if password == st.secrets["password"]:
 
             update_date_of_recovery = st.date_input(
                 label="Date of Recovery",
-                value=pd.to_datetime(values_to_update["Date of Injury Resolved"], format="%d-%m-%Y"),
+                value=pd.to_datetime(
+                    values_to_update["Date of Injury Resolved"], format="%d-%m-%Y"
+                ),
                 key="update_date_of_recovery",
             )
 
@@ -283,13 +295,19 @@ if password == st.secrets["password"]:
             or values_to_update["Days Missed"] == None
         ):
             values_to_update["Days Missed"] = 0
-        
 
-        if update_recovered == 'Yes':
-            if update_date_of_recovery != "" or update_date_of_recovery == None or update_date_of_recovery == 'nan':
+        if update_recovered == "Yes":
+            if (
+                update_date_of_recovery != ""
+                or update_date_of_recovery == None
+                or update_date_of_recovery == "nan"
+            ):
                 update_days_missed_value = (
-                    update_date_of_recovery - datetime.strptime(values_to_update["Date of Injury"], "%d-%m-%Y").date()
-                ).days 
+                    update_date_of_recovery
+                    - datetime.strptime(
+                        values_to_update["Date of Injury"], "%d-%m-%Y"
+                    ).date()
+                ).days
                 update_days_missed = st.number_input(
                     label="Days Missed",
                     step=1,
@@ -355,7 +373,7 @@ if password == st.secrets["password"]:
             key="update_description",
         )
 
-        if update_recovered == 'Yes':
+        if update_recovered == "Yes":
             if update_date_of_recovery == "":
                 update_date_of_recovery_valuetopass = ""
             else:
@@ -371,14 +389,57 @@ if password == st.secrets["password"]:
         if st.button(label="Update This Row of Data"):
             index_value = str(update_radio + 2)
             worksheet = da.injury_tracker_worksheet_object()
-            worksheet.update("E" + index_value, update_date_of_recovery_valuetopass, value_input_option='USER_ENTERED')
-            worksheet.update("F" + index_value, update_season_window, value_input_option='USER_ENTERED')
-            worksheet.update("G" + index_value, update_type_of_injury, value_input_option='USER_ENTERED')
-            worksheet.update("H" + index_value, update_area_of_injury, value_input_option='USER_ENTERED')
-            worksheet.update("I" + index_value, update_side_of_injury, value_input_option='USER_ENTERED')
-            worksheet.update("K" + index_value, update_days_missed, value_input_option='USER_ENTERED')
-            worksheet.update("L" + index_value, update_games_missed, value_input_option='USER_ENTERED')
-            worksheet.update("M" + index_value, update_surgery, value_input_option='USER_ENTERED')
-            worksheet.update("N" + index_value, update_surgery_date_valuetopass, value_input_option='USER_ENTERED')
-            worksheet.update("O" + index_value, update_video_link, value_input_option='USER_ENTERED')
-            worksheet.update("P" + index_value, update_description, value_input_option='USER_ENTERED')
+
+            worksheet.update(
+                "D" + index_value,
+                update_date_of_injury_value_to_pass,
+                value_input_option="USER_ENTERED",
+            )
+
+            worksheet.update(
+                "E" + index_value,
+                update_date_of_recovery_valuetopass,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "F" + index_value,
+                update_season_window,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "G" + index_value,
+                update_type_of_injury,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "H" + index_value,
+                update_area_of_injury,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "I" + index_value,
+                update_side_of_injury,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "K" + index_value, update_days_missed, value_input_option="USER_ENTERED"
+            )
+            worksheet.update(
+                "L" + index_value,
+                update_games_missed,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "M" + index_value, update_surgery, value_input_option="USER_ENTERED"
+            )
+            worksheet.update(
+                "N" + index_value,
+                update_surgery_date_valuetopass,
+                value_input_option="USER_ENTERED",
+            )
+            worksheet.update(
+                "O" + index_value, update_video_link, value_input_option="USER_ENTERED"
+            )
+            worksheet.update(
+                "P" + index_value, update_description, value_input_option="USER_ENTERED"
+            )
