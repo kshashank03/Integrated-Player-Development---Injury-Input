@@ -202,7 +202,7 @@ if password == st.secrets["password"]:
         values_to_update = injury_data.iloc[update_radio, :]
         values_to_update = values_to_update.fillna("")
 
-        update_date_of_injury = r_column.date_input(
+        update_date_of_injury = st.date_input(
             label="Date of Injury",
             value=pd.to_datetime(values_to_update["Date of Injury"], format="%d-%m-%Y"),
             key="update_date_of_injury",
