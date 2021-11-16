@@ -315,7 +315,7 @@ if password == st.secrets["password"]:
             key="update_games_missed",
         )
 
-        if pd.isnull(pd.to_datetime(values_to_update["Date of Surgery"], format="%d-%m-%Y")):
+        if pd.isnull(pd.to_datetime(values_to_update["Date of Surgery"])):
             update_surgery = st.selectbox(
                 label="Surgery",
                 options=injury_options["Surgery"].dropna(),
