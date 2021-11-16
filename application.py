@@ -139,10 +139,10 @@ if password == st.secrets["password"]:
         number_rows_to_add = len(pd.DataFrame(get_data())) + last_row
         temp_dataframe = pd.DataFrame(get_data())
         temp_dataframe["Date of Injury"] = pd.to_datetime(
-            temp_dataframe["Date of Injury"]
+            temp_dataframe["Date of Injury"], format="%d-%m-%Y"
         )
         temp_dataframe["Date of Injury Resolved"] = pd.to_datetime(
-            temp_dataframe["Date of Injury Resolved"]
+            temp_dataframe["Date of Injury Resolved"], format="%d-%m-%Y"
         )
         temp_dataframe["Date of Injury"] = temp_dataframe["Date of Injury"].dt.strftime(
             "%d-%m-%Y"
@@ -217,7 +217,7 @@ if password == st.secrets["password"]:
 
             update_date_of_recovery = st.date_input(
                 label="Date of Recovery",
-                value=pd.to_datetime(values_to_update["Date of Injury Resolved"]),
+                value=pd.to_datetime(values_to_update["Date of Injury Resolved"], format="%d-%m-%Y"),
                 key="update_date_of_recovery",
             )
 
@@ -315,7 +315,7 @@ if password == st.secrets["password"]:
             key="update_games_missed",
         )
 
-        if pd.isnull(pd.to_datetime(values_to_update["Date of Surgery"])):
+        if pd.isnull(pd.to_datetime(values_to_update["Date of Surgery"], format="%d-%m-%Y")):
             update_surgery = st.selectbox(
                 label="Surgery",
                 options=injury_options["Surgery"].dropna(),
