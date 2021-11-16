@@ -237,8 +237,8 @@ if password == st.secrets["password"]:
             update_date_of_recovery = st.date_input(
                 label="Date of Recovery", key="update_date_of_recovery"
             )
-        # else:
-        #     update_date_of_recovery = ""
+        elif update_recovered == "Yes":
+            update_date_of_recovery_valuetopass = ""
 
         update_season_window_options = injury_options["Season Window"].dropna()
         update_season_window_options_index = update_season_window_options[
