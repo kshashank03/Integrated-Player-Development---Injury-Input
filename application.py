@@ -210,7 +210,7 @@ if password == st.secrets["password"]:
 
         update_date_of_injury_value_to_pass = update_date_of_injury.strftime(format="%d-%m-%Y")
 
-        if pd.isnull(pd.to_datetime(values_to_update["Date of Injury Resolved"])):
+        if pd.isnull(pd.to_datetime(values_to_update["Date of Injury Resolved"])) or values_to_update["Date of Injury Resolved"] == 'nan':
             update_recovered = st.radio(
                 label="Recovered?",
                 options=["Yes", "No"],
@@ -233,7 +233,7 @@ if password == st.secrets["password"]:
                 key="update_date_of_recovery",
             )
 
-        if update_recovered == "Yes" and update_date_of_recovery == None:
+        if update_recovered == "Yes" and pd.isnull(pd.to_datetime(values_to_update["Date of Injury Resolved"])):
             update_date_of_recovery = st.date_input(
                 label="Date of Recovery", key="update_date_of_recovery"
             )
