@@ -139,10 +139,10 @@ if password == st.secrets["password"]:
         number_rows_to_add = len(pd.DataFrame(get_data())) + last_row
         temp_dataframe = pd.DataFrame(get_data())
         temp_dataframe["Date of Injury"] = pd.to_datetime(
-            temp_dataframe["Date of Injury"], format="%d-%m-%Y"
+            temp_dataframe["Date of Injury"]
         )
         temp_dataframe["Date of Injury Resolved"] = pd.to_datetime(
-            temp_dataframe["Date of Injury Resolved"], format="%d-%m-%Y"
+            temp_dataframe["Date of Injury Resolved"]
         )
         temp_dataframe["Date of Injury"] = temp_dataframe["Date of Injury"].dt.strftime(
             "%d-%m-%Y"
